@@ -21,7 +21,17 @@ for (( i = 0; i < 60; i=(i+step) )); do
     $(php '/home/fdipzone/php/crontab/tolog.php')  
     sleep $step  
 done  
-  
+
 exit 0
 ```
 参考网址[Linux crontab 实现秒级定时任务](https://www.cnblogs.com/handle/p/9246197.html)
+
+
+
+## **2、linux下如何利用ps和kill杀死进程**
+`ps -ef |grep python |grep -v grep |awk '{print $2}'|xargs kill -9 `
+* 注意|grep -v grep可以排除当前查找python的进程
+* |awk '{print $2}'为在ps查找的结果中获取第二列,即pid
+
+
+参考网址[https://www.cnblogs.com/shanheyongmu/p/6001098.html](https://www.cnblogs.com/shanheyongmu/p/6001098.html)
