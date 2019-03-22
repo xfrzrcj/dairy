@@ -195,42 +195,6 @@ public static void main(String[] args) {
     }
 
     /**
-     * Replaces each entry's value with the result of invoking the given
-     * function on that entry until all entries have been processed or the
-     * function throws an exception.  Exceptions thrown by the function are
-     * relayed to the caller.
-     *
-     * @implSpec
-     * <p>The default implementation is equivalent to, for this {@code map}:
-     * <pre> {@code
-     * for (Map.Entry<K, V> entry : map.entrySet())
-     *     entry.setValue(function.apply(entry.getKey(), entry.getValue()));
-     * }</pre>
-     *
-     * <p>The default implementation makes no guarantees about synchronization
-     * or atomicity properties of this method. Any implementation providing
-     * atomicity guarantees must override this method and document its
-     * concurrency properties.
-     *
-     * @param function the function to apply to each entry
-     * @throws UnsupportedOperationException if the {@code set} operation
-     * is not supported by this map's entry set iterator.
-     * @throws ClassCastException if the class of a replacement value
-     * prevents it from being stored in this map
-     * @throws NullPointerException if the specified function is null, or the
-     * specified replacement value is null, and this map does not permit null
-     * values
-     * @throws ClassCastException if a replacement value is of an inappropriate
-     *         type for this map
-     *         (<a href="{@docRoot}/java/util/Collection.html#optional-restrictions">optional</a>)
-     * @throws NullPointerException if function or a replacement value is null,
-     *         and this map does not permit null keys or values
-     *         (<a href="{@docRoot}/java/util/Collection.html#optional-restrictions">optional</a>)
-     * @throws IllegalArgumentException if some property of a replacement value
-     *         prevents it from being stored in this map
-     *         (<a href="{@docRoot}/java/util/Collection.html#optional-restrictions">optional</a>)
-     * @throws ConcurrentModificationException if an entry is found to be
-     * removed during iteration
      * @since 1.8
      */
     default void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
@@ -392,4 +356,21 @@ public static void main(String[] args) {
 
 ```
 
-注意default 方法和Map.Entry中的static方法。JAVA 1.8以前interface中只能定义而不能实现方法。但JDK1.8中为了加强接口的能力，使得接口可以存在具体的方法，前提是方法需要被default或static关键字所修饰[[1]](https://blog.csdn.net/SnailMann/article/details/80231593)。
+注意default 方法和Map.Entry中的static方法。JAVA 1.8以前interface中只能定义而不能实现方法。但JDK1.8中为了加强接口的能力，使得接口可以存在具体的方法，前提是方法需要被default或static关键字所修饰[[1]](https://blog.csdn.net/SnailMann/article/details/80231593)。主要是为了支持lambda表达式。
+
+由于entry添加了一例如comparingByKey的static方法，对map的排序可采用如下简介的形式。主要是将entry转化为stream形式，再调用sorted方法排序。[参考原文](https://blog.csdn.net/kaka0930/article/details/52996486###)。
+```
+    public static void sortByKey(Map map)
+		{
+			List<Map.Entry<String, Pet>> compareByValue = (List<Entry<String, Pet>>) map
+					.entrySet()
+					.stream()
+					.sorted(Map.Entry.comparingByValue((Pet p1,Pet p2)->{
+					       return p1.name.length()-p2.name.length();
+					}))
+					.collect(Collectors.toList());
+
+			compareByValue.forEach(System.out::println);
+    }
+
+```
