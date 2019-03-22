@@ -358,7 +358,7 @@ public static void main(String[] args) {
 
 注意default 方法和Map.Entry中的static方法。JAVA 1.8以前interface中只能定义而不能实现方法。但JDK1.8中为了加强接口的能力，使得接口可以存在具体的方法，前提是方法需要被default或static关键字所修饰[[1]](https://blog.csdn.net/SnailMann/article/details/80231593)。主要是为了支持lambda表达式。
 
-由于entry添加了一例如comparingByKey的static方法，对map的排序可采用如下简介的形式。主要是将entry转化为stream形式，再调用sorted方法排序。[参考原文](https://blog.csdn.net/kaka0930/article/details/52996486###)。
+由于entry添加了一例如comparingByKey的static方法，对map的排序可采用如下简单的形式。主要是将entry转化为stream形式，再调用sorted方法排序。[参考原文](https://blog.csdn.net/kaka0930/article/details/52996486###)。
 ```
     public static void sortByKey(Map map)
 		{
