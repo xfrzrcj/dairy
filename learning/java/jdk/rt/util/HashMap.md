@@ -61,3 +61,72 @@ static final int tableSizeFor(int cap) {
 由于平时不太使用位操作符，看了半天才看懂其实际功能。其主要功能为，对给定一个正整数a（小于2的30次），计算一个最小值b，使其不小于a,且b=2^x（x为正整数）。首先`>>>`表示忽略符号右移,`|`表示只要两个数有一个1则结果为1。对于一个二进制数`101110`,先右移一位再与原数做或运算，则前两位必定是1，此时将结果右移2位再做或运算则可以将前4位设为1（注意位移数为2^n位），相当于将二进制的所有位，赋值为1，此时再加一就能得到2^x。如下示意图：
 
 ![求最小2次方演示](/pic/get_min_2_n.jpg "求最小2次方演示")
+
+* **数据插入**
+
+put方法
+```JAVA
+public V put(K key, V value) {
+    return putVal(hash(key), key, value, false, true);
+}
+```
+首先计算hash
+```JAVA
+static final int hash(Object key) {
+    int h;
+    return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+}
+```
+这里将key的hashcode和自身的高位取异或的值，计算得出hash。
+```JAVA
+static final int hash(Object key) {
+    int h;
+    return (key == null) ? 0 : (h = key.hashCode()) ^ (h >>> 16);
+}
+
+final V putVal(int hash, K key, V value, boolean onlyIfAbsent,
+               boolean evict) {
+    Node<K,V>[] tab; Node<K,V> p; int n, i;
+    //table是内部变量，定义为transient Node<K,V>[] table;
+    //包含了map的数据
+    if ((tab = table) == null || (n = tab.length) == 0)
+        //当还没有数据时，初始化节点数组
+        n = (tab = resize()).length;
+    if ((p = tab[i = (n - 1) & hash]) == null)
+        tab[i] = newNode(hash, key, value, null);
+    else {
+        Node<K,V> e; K k;
+        if (p.hash == hash &&
+            ((k = p.key) == key || (key != null && key.equals(k))))
+            e = p;
+        else if (p instanceof TreeNode)
+            e = ((TreeNode<K,V>)p).putTreeVal(this, tab, hash, key, value);
+        else {
+            for (int binCount = 0; ; ++binCount) {
+                if ((e = p.next) == null) {
+                    p.next = newNode(hash, key, value, null);
+                    if (binCount >= TREEIFY_THRESHOLD - 1) // -1 for 1st
+                        treeifyBin(tab, hash);
+                    break;
+                }
+                if (e.hash == hash &&
+                    ((k = e.key) == key || (key != null && key.equals(k))))
+                    break;
+                p = e;
+            }
+        }
+        if (e != null) { // existing mapping for key
+            V oldValue = e.value;
+            if (!onlyIfAbsent || oldValue == null)
+                e.value = value;
+            afterNodeAccess(e);
+            return oldValue;
+        }
+    }
+    ++modCount;
+    if (++size > threshold)
+        resize();
+    afterNodeInsertion(evict);
+    return null;
+}
+```
