@@ -27,6 +27,8 @@ exit 0
 参考网址[Linux crontab 实现秒级定时任务](https://www.cnblogs.com/handle/p/9246197.html)
 
 
+---
+
 
 ## **2、linux下如何利用ps和kill杀死进程**
 `ps -ef |grep python |grep -v grep |awk '{print $2}'|xargs kill -9 `

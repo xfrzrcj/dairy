@@ -35,3 +35,5 @@ function transferFrom(address _from, address _to, uint256 _value)
 注意到 require 中对 allowance 作了检查。而 allowed 这个 mapping 是由 approve 方法赋值的，可以通过 allowance 方法查看 owner 给 spender 的额度。虽然 a 调用了 transferFrom(a,b,money) ， 但a没有事先给自己使用token的限额，allowance中没有<a,<a,money>>的记录，故无法通过 transferFrom 转账。但 transfer 直接检查发送者 token 是否充足，所以可以转账成功。实际上 EIP-20 上有说明，参见[eip-20.md](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-20.md). 整个合约的转账分两种：
 * 一种是 transfer 类的直接转账，即交易发起者即转账人，只需填写收款人和数量即可
 * 另一种是 transferFrom 类的转账，类似于代付机制。a 先给 b 一部分额度可以供 b 使用， b 调用 transferFrom 方法让 a 代替 b 付款。可以类比信用卡的支付模式。
+
+---

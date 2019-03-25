@@ -6,13 +6,13 @@ public abstract class AbstractMap<K,V> implements Map<K,V>
 
 ## 代码解析
 
-```
+```JAVA
 transient volatile Set<K>        keySet;
 transient volatile Collection<V> values;
 ```
 注意keyset和values的两个修饰词transient、volatile。transient阻止对象序列化(大概是隐私性要求)。[volatile](https://www.cnblogs.com/chengxiao/p/6528109.html)确保共享变量对所有线程的可见性。
 
-```
+```JAVA
 public int hashCode() {
         int h = 0;
         Iterator<Entry<K,V>> i = entrySet().iterator();
@@ -22,14 +22,14 @@ public int hashCode() {
     }
 ```
 这边hashcode即为map中所定义的将所有entry的hashcode相加。
-```
+```JAVA
 public int hashCode() {
             return (key   == null ? 0 :   key.hashCode()) ^
                    (value == null ? 0 : value.hashCode());
         }
 ```
 这段是entry的hashCode定义，采用key异或value的方式获取值。
-```
+```JAVA
 public String toString() {
         Iterator<Entry<K,V>> i = entrySet().iterator();
         if (! i.hasNext())

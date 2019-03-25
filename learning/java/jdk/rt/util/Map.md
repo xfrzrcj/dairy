@@ -8,7 +8,7 @@ public interface Map<K,V>
 key-value 数据结构，python中对应结构为dict（字典）。key,value一一对应。注释中提到:  
 ` This interface takes the place of the <tt>Dictionary</tt> class, which was a totally abstract class rather than an interface. `  
 查看了一下Dictionary类：  
-```
+```JAVA
 public abstract
 class Dictionary<K,V> {
     public Dictionary() {
@@ -26,7 +26,7 @@ class Dictionary<K,V> {
 基本和map类似，但map将k-v结构提到了接口高度，高于抽象类。估计某个远古版本之前k-v结构是用Dictionary，后来替换为map。
 
 map接口有3个视图，包括key的集合、value的集合、k-v映射集合。map的顺序定义为其迭代器返回的顺序。**当key是可变对象时需要特别谨慎，因为key作为可变对象在变化时有可能影响到equal方法的比较，导致错误**。例如map是无法将自己作为key，因为这时会影响到hashcode取值。在此我们做个简单测试：
-```
+```JAVA
 public static void main(String[] args) {
   HashMap m = new HashMap<>();
   HashMap m2 = new HashMap<>();
@@ -58,7 +58,7 @@ m2改变后m中m2对应从value:null
 map的equal方法通常调用Object的hashcode方法来比较Key是否相同。
 
 当map做一些递归操作时通常会引起自我递归的异常。通常包括equals，hashCode，toString，clone方法。但是大部分实现类没有处理这个异常，所以需要注意。测试代码：
-```
+```JAVA
 public static void main(String[] args) {
   HashMap m = new HashMap<>();
   System.out.println("m2改变后m中m2对应从value:"+m.get(m2));
@@ -80,7 +80,7 @@ public static void main(String[] args) {
 
 ## 代码解析
 
-```
+```java
     //返回存有的key-value映射数量，当数量超过Integer.MAX_VALUE，返回Integer.MAX_VALUE。
     int size();
     boolean isEmpty();
@@ -359,7 +359,7 @@ public static void main(String[] args) {
 注意default 方法和Map.Entry中的static方法。JAVA 1.8以前interface中只能定义而不能实现方法。但JDK1.8中为了加强接口的能力，使得接口可以存在具体的方法，前提是方法需要被default或static关键字所修饰[[1]](https://blog.csdn.net/SnailMann/article/details/80231593)。主要是为了支持lambda表达式。
 
 由于entry添加了一例如comparingByKey的static方法，对map的排序可采用如下简单的形式。主要是将entry转化为stream形式，再调用sorted方法排序。[参考原文](https://blog.csdn.net/kaka0930/article/details/52996486###)。
-```
+```JAVA
     public static void sortByKey(Map map)
 		{
 			List<Map.Entry<String, Pet>> compareByValue = (List<Entry<String, Pet>>) map
