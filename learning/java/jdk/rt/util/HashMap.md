@@ -247,6 +247,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
      * Returns root of tree containing this node.
      */
     final TreeNode<K,V> root() {
+      //遍历查找树根
         for (TreeNode<K,V> r = this, p;;) {
             if ((p = r.parent) == null)
                 return r;
@@ -262,6 +263,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
         if (root != null && tab != null && (n = tab.length) > 0) {
             int index = (n - 1) & root.hash;
             TreeNode<K,V> first = (TreeNode<K,V>)tab[index];
+            //将root节点放到最前，并将其两侧的节点重新连接
             if (root != first) {
                 Node<K,V> rn;
                 tab[index] = root;
@@ -796,7 +798,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     }
 
     /**
-     * Recursive invariant check
+     * 递归检查
      */
     static <K,V> boolean checkInvariants(TreeNode<K,V> t) {
         TreeNode<K,V> tp = t.parent, tl = t.left, tr = t.right,
