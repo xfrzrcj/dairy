@@ -291,24 +291,31 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
         do {
             int ph, dir; K pk;
             TreeNode<K,V> pl = p.left, pr = p.right, q;
+            //根据节点的hash与h的比较决定向左子叶走还是右子叶。
+            //可见树是左大右小的
             if ((ph = p.hash) > h)
                 p = pl;
             else if (ph < h)
                 p = pr;
+            //此时h是相同的，当key相同时则找到给定node
             else if ((pk = p.key) == k || (k != null && k.equals(pk)))
                 return p;
+            //不存在左子叶就找右子叶，不存在右子叶就找左子叶
             else if (pl == null)
                 p = pr;
             else if (pr == null)
                 p = pl;
+            //对相同的hash,但key不同时，且pk和k类型相同，则根据两者比较大小来确定位置
             else if ((kc != null ||
                       (kc = comparableClassFor(k)) != null) &&
                      (dir = compareComparables(kc, k, pk)) != 0)
                 p = (dir < 0) ? pl : pr;
+            //当h相同，key不同且无法比较时先递归检查左树，不行再检查右树
             else if ((q = pr.find(h, k, kc)) != null)
                 return q;
             else
                 p = pl;
+                //整个循环会一直执行到找到值或找到为null的子叶为止
         } while (p != null);
         return null;
     }
