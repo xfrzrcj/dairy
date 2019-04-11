@@ -111,6 +111,94 @@ spring-comm-dao.xml配置如下：
 
 ---
 
+## **2.配置ControllerAdvice失效**
+
+代码如下
+```JAVA
+@ControllerAdvice
+public class ControllerDealer {
+//	@InitBinder
+//    public void initBinder(WebDataBinder binder) {}
+//
+//	@ModelAttribute
+//    public void addAttributes(Model model) {
+//    }
+
+	@ResponseBody
+    @ExceptionHandler({Exception.class})
+    public String errorHandler(Exception ex) {
+		Result res = new Result();
+		res.setCode(-1);
+		res.setMessage(ex.getMessage());
+        return Constants.gson.toJson(res);
+    }
+}
+
+```
+
+对controller的扫描配置在dispatcher-servlet.xml中，配置如下：
+```XML
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       ">
+	<context:component-scan
+		base-package="com.unis.controller" />
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping" />
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<!--必须在JSON 之前，否则没效果 -->
+				<ref bean="stringHttpMessageConverter" />
+				<ref bean="mappingJackson2HttpMessageConverter" />
+
+			</list>
+		</property>
+	</bean>
+	<!--JSON 输出 -->
+	<bean id="mappingJackson2HttpMessageConverter"
+		class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>application/json;charset=UTF-8</value>
+				<value>text/html;charset=UTF-8</value>
+				<value>text/json;charset=UTF-8</value>
+			</list>
+		</property>
+		<!--返回JSON list -->
+		<property name="objectMapper">
+			<bean
+				class="com.github.miemiedev.mybatis.paginator.jackson2.PageListJsonMapper" />
+		</property>
+	</bean>
+	<!--String 输出解决双引号问题 -->
+	<bean id="stringHttpMessageConverter"
+		class="org.springframework.http.converter.StringHttpMessageConverter">
+		<property name="supportedMediaTypes">
+			<list>
+				<value>application/json;charset=UTF-8</value>
+				<value>text/html;charset=UTF-8</value>
+				<value>text/json;charset=UTF-8</value>
+			</list>
+		</property>
+		<!-- 避免头部过大 -->
+		<property name="writeAcceptCharset" value="false" />
+	</bean>
+	<!-- <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+		p:prefix="/resources/jsp/" p:suffix=".jsp" /> -->
+
+</beans>
+```
+`<context:component-scan  base-package="com.unis.controller" />`已经指定了扫描的包，但下面的配置的bean中没有配置处理异常的bean，添加`<bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver" />`即可。[参考链接](https://www.jianshu.com/p/d09704644ff1?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
+
 
 
 
