@@ -292,7 +292,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
             int ph, dir; K pk;
             TreeNode<K,V> pl = p.left, pr = p.right, q;
             //根据节点的hash与h的比较决定向左子叶走还是右子叶。
-            //可见树是左大右小的
+            //可见树是左小右大的
             if ((ph = p.hash) > h)
                 p = pl;
             else if (ph < h)
@@ -328,11 +328,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     }
 
     /**
-     * Tie-breaking utility for ordering insertions when equal
-     * hashCodes and non-comparable. We don't require a total
-     * order, just a consistent insertion rule to maintain
-     * equivalence across rebalancings. Tie-breaking further than
-     * necessary simplifies testing a bit.
+     * 针对两个对象比较，只需确保一致性即可
      */
     static int tieBreakOrder(Object a, Object b) {
         int d;
@@ -345,14 +341,14 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
     }
 
     /**
-     * Forms tree of the nodes linked from this node.
-     * @return root of tree
+     * 此节点的数据整理成树结构
      */
     final void treeify(Node<K,V>[] tab) {
         TreeNode<K,V> root = null;
         for (TreeNode<K,V> x = this, next; x != null; x = next) {
             next = (TreeNode<K,V>)x.next;
             x.left = x.right = null;
+            //将第一个数据标记为根节点并标记为红
             if (root == null) {
                 x.parent = null;
                 x.red = false;
