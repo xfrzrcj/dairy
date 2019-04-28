@@ -369,7 +369,7 @@ static final class TreeNode<K,V> extends LinkedHashMap.Entry<K,V> {
                               (kc = comparableClassFor(k)) == null) ||
                              (dir = compareComparables(kc, k, pk)) == 0)
                         dir = tieBreakOrder(k, pk);
-
+ 
                     TreeNode<K,V> xp = p;
                     if ((p = (dir <= 0) ? p.left : p.right) == null) {
                         x.parent = xp;
