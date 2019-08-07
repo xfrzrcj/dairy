@@ -56,12 +56,12 @@ sqoop export --connect jdbc:mysql://ip:3306/db?characterEncoding=utf8 --username
 导入
 
 ```shell
-sqoop import --connect jdbc:oracle:thin:@ip:port/ORCL --username user --password pwd --table db.table --target-dir /path --delete-target-dir -m 1 --null-string "\\N" --null-non-string "\\N" --as-textfile --hive-drop-import-delims
+sqoop import --connect jdbc:oracle:thin:@ip:port/ORCL --username user --password pwd --table db.table --target-dir /path --delete-target-dir -m 1 --null-string "\\N" --null-non-string "\\N" --as-textfile --fields-terminated-by "\001" --hive-drop-import-delims 
 ```
 
 导出
 
 ```shell
-sqoop export --connect jdbc:mysql://ip:3306/db?characterEncoding=utf8 --username user --password pwd --table table --export-dir /path* --update-mode allowinsert --update-key id --input-null-string "\\N" --input-null-non-string "\\N"
+sqoop export --connect jdbc:mysql://ip:3306/db?characterEncoding=utf8 --username user --password pwd --table table --export-dir /path* --update-mode allowinsert --update-key id --input-null-string "\\N" --input-null-non-string "\\N" --fields-terminated-by "\001"
 ```
 
