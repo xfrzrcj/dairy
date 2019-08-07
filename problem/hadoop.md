@@ -65,3 +65,13 @@ sqoop import --connect jdbc:oracle:thin:@ip:port/ORCL --username user --password
 sqoop export --connect jdbc:mysql://ip:3306/db?characterEncoding=utf8 --username user --password pwd --table table --export-dir /path* --update-mode allowinsert --update-key id --input-null-string "\\N" --input-null-non-string "\\N" --fields-terminated-by "\001"
 ```
 
+**NOTE:**
+
+| 分隔符                                                       | 描述                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| \n                                                           | 对于文本文件来说，每行都是一条记录，因此换行符可以分隔记录   |
+| ^A(ctl+A)                                                    | 用于分隔字段(列)。在CREATE TABLE语句中可以使用八进制编码\001表示 |
+| ^B(ctl+B)                                                    | 用于分隔ARRAY或者STRUCT中的元素，或用于MAP中键-值对之间的分隔。在CREATE TABLE语句中可以使用八进制编码\002表示 |
+| ^C(ctl+C)                                                    | 用于MAP中键和值之间的分隔。在CREATE TABLE语句中可以使用八进制编码\003表示 |
+| Hive 中没有定义专门的数据格式，数据格式可以由用户指定，用户定义数据格式需要指定三个属性：列分隔符（通常为空格、”\t”、”\x001″）、行分隔符（”\n”）以及读取文件数据的方法。由于在加载数据的过程中，不需要从用户数据格式到 Hive 定义的数据格式的转换，因此，Hive 在加载的过程中不会对数据本身进行任何修改，而只是将数据内容复制或者移动到相应的 HDFS 目录中。|
+
